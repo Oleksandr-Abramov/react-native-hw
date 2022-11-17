@@ -10,7 +10,6 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-  Switch,
 } from "react-native";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
@@ -116,7 +115,6 @@ export default function LoginScreen() {
                   value={state.password}
                   onChangeText={(value) => setstate((prevState) => ({ ...prevState, password: value }))}
                 />
-                <Switch ios_backgroundColor="#3e3e3e" />
               </View>
               {!isShowKeyboard && (
                 <View>
