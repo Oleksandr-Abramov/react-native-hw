@@ -45,12 +45,14 @@ export default function LoginScreen() {
   const handleSubmit = () => {
     console.log("state", state);
     setstate(initialState);
+    setShowPassword(false);
   };
 
   const keyboardSubmit = () => {
     console.log("state", state);
     setstate(initialState);
     keyboardHide();
+    setShowPassword(false);
   };
 
   // if (!isReady) {
@@ -102,11 +104,11 @@ export default function LoginScreen() {
                   onChangeText={(value) => setstate((prevState) => ({ ...prevState, email: value }))}
                 />
               </View>
-              <View style={{ marginTop: 20, marginBottom: 32 }}>
+              <View style={styles.passwordInput}>
                 <TextInput
                   placeholder={"Пароль"}
                   placeholderTextColor={"#BDBDBD"}
-                  secureTextEntry={true}
+                  secureTextEntry={!showPassword}
                   style={{ ...styles.input, borderColor: borderInput === "Пароль" ? "#FF6C00" : "#E8E8E8" }}
                   onFocus={() => {
                     setIsShowKeyboard(true);
@@ -115,6 +117,16 @@ export default function LoginScreen() {
                   value={state.password}
                   onChangeText={(value) => setstate((prevState) => ({ ...prevState, password: value }))}
                 />
+                {state.password && (
+                  <Text
+                    style={styles.passwordBtn}
+                    onPress={() => {
+                      setShowPassword(!showPassword);
+                    }}
+                  >
+                    {showPassword ? "Сховати" : "Показати"}
+                  </Text>
+                )}
               </View>
               {!isShowKeyboard && (
                 <View>
@@ -162,6 +174,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
+  },
+  passwordInput: {
+    position: "relative",
+    marginTop: 20,
+    marginBottom: 32,
+  },
+  passwordBtn: {
+    position: "absolute",
+    top: "35%",
+    right: 35,
+    fontSize: 16,
+    lineHeight: 19,
   },
   btn: {
     marginTop: 11,
