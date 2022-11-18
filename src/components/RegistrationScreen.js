@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,11 +10,13 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
 
 const initialState = {
+  login: "",
   email: "",
   password: "",
 };
@@ -28,6 +30,8 @@ const loadFonts = async () => {
 };
 
 const image = require("../images/PhotoBG.jpg");
+const add = require("../images/add.png");
+const remove = require("../images/remove.png");
 
 export default function LoginScreen() {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
@@ -71,22 +75,27 @@ export default function LoginScreen() {
             onSubmitEditing={keyboardSubmit}
           >
             {/* <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}> */}
-            <View style={styles.header}>
-              <Text style={styles.headerTitle}>Увійти</Text>
+            <View style={styles.avatarWrapper}>
+              <View style={styles.avatar}>
+                <Image style={styles.avatarBtn} source={add} />
+              </View>
             </View>
-            {/* <View>
-                <TextInput
-                  placeholder={"Логін"}
-                  placeholderTextColor={"#BDBDBD"}
-                  style={{ ...styles.input, borderColor: borderInput === "Логін" ? "#FF6C00" : "#E8E8E8" }}
-                  onFocus={() => {
-                    setIsShowKeyboard(true);
-                    setBorderInput("Логін");
-                  }}
-                  value={state.email}
-                  onChangeText={(value) => setstate((prevState) => ({ ...prevState, email: value }))}
-                />
-              </View> */}
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>Реєстрація</Text>
+            </View>
+            <View style={{ marginBottom: 20 }}>
+              <TextInput
+                placeholder={"Логін"}
+                placeholderTextColor={"#BDBDBD"}
+                style={{ ...styles.input, borderColor: borderInput === "Логін" ? "#FF6C00" : "#E8E8E8" }}
+                onFocus={() => {
+                  setIsShowKeyboard(true);
+                  setBorderInput("Логін");
+                }}
+                value={state.login}
+                onChangeText={(value) => setstate((prevState) => ({ ...prevState, login: value }))}
+              />
+            </View>
             <View>
               <TextInput
                 placeholder={"Адреса електронної пошти"}
@@ -131,10 +140,10 @@ export default function LoginScreen() {
             {!isShowKeyboard && (
               <View>
                 <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={handleSubmit}>
-                  <Text style={styles.btnTitle}>Увійти</Text>
+                  <Text style={styles.btnTitle}>Зареєструватися</Text>
                 </TouchableOpacity>
                 <View>
-                  <Text style={styles.underBtnText}>Не маєш аккаунт? Зареєструватися</Text>
+                  <Text style={styles.underBtnText}>Маєш аккаунт? Увайти</Text>
                 </View>
               </View>
             )}
@@ -156,6 +165,19 @@ const styles = StyleSheet.create({
     // resizeMode: "cover",
     justifyContent: "flex-end",
   },
+  avatarWrapper: {
+    display: "flex",
+    alignItems: "center",
+  },
+  avatar: {
+    position: "relative",
+    marginTop: -60,
+    width: 120,
+    height: 120,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
+  avatarBtn: { position: "absolute", bottom: 15, right: -12.5 },
   input: {
     borderWidth: 1,
     borderColor: "#E8E8E8",
@@ -218,6 +240,6 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center",
     marginTop: 16,
-    marginBottom: 144,
+    marginBottom: 78,
   },
 });
