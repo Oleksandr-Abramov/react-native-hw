@@ -17,9 +17,9 @@ const initialState = {
   password: "",
 };
 
-const image = require("../images/PhotoBG.jpg");
+const image = require("../../images/PhotoBG.jpg");
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setstate] = useState(initialState);
   const [borderInput, setBorderInput] = useState(null);
@@ -42,6 +42,10 @@ export default function LoginScreen() {
     setstate(initialState);
     keyboardHide();
     setShowPassword(false);
+    navigation.navigate("Posts", {
+      screen: "PostsScreen",
+      params: state,
+    });
   };
 
   return (
@@ -102,12 +106,16 @@ export default function LoginScreen() {
             </View>
             {!isShowKeyboard && (
               <View>
-                <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={handleSubmit}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={keyboardHide}>
                   <Text style={styles.btnTitle}>Увійти</Text>
                 </TouchableOpacity>
-                <View>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.route}
+                  onPress={() => navigation.navigate("Register")}
+                >
                   <Text style={styles.underBtnText}>Не маєш аккаунт? Зареєструватися</Text>
-                </View>
+                </TouchableOpacity>
               </View>
             )}
             {/* </KeyboardAvoidingView> */}
@@ -137,7 +145,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     padding: 16,
     fontSize: 16,
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto_400Regular",
     lineHeight: 19,
     textAlign: "left",
     color: "#212121",
@@ -157,7 +165,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "35%",
     right: 35,
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto_400Regular",
     fontSize: 16,
     lineHeight: 19,
   },
@@ -169,13 +177,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 16,
     padding: 16,
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto_400Regular",
     fontSize: 16,
     lineHeight: 19,
   },
   btnTitle: {
     color: "#f0f8ff",
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto_400Regular",
     fontSize: 18,
   },
   header: {
@@ -184,14 +192,14 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   headerTitle: {
-    fontFamily: "Roboto-Medium",
+    fontFamily: "Roboto_500Medium",
     fontSize: 30,
     lineHeight: 35,
     color: "#212121",
   },
   underBtnText: {
     fontSize: 16,
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto_400Regular",
     lineHeight: 19,
     textAlign: "center",
     marginTop: 16,

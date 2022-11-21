@@ -1,38 +1,22 @@
 import { StyleSheet, Text, View } from "react-native";
-import RegistrationScreen from "./src/components/RegistrationScreen";
-import LoginScreen from "./src/components/LoginScreen";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import { useCallback, useEffect } from "react";
+import { useFonts, Roboto_400Regular, Roboto_500Medium } from "@expo-google-fonts/roboto";
+import { NavigationContainer } from "@react-navigation/native";
+import { useRoute } from "./router";
+import AppLoading from "expo-app-loading";
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
-    "Roboto-Medium": require("./src/fonts/Roboto-Medium.ttf"),
-    "Roboto-Regular": require("./src/fonts/Roboto-Regular.ttf"),
+  let [fontsLoaded] = useFonts({
+    Roboto_400Regular,
+    Roboto_500Medium,
   });
 
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-    prepare();
-  }, []);
+  const routing = useRoute(true);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
   if (!fontsLoaded) {
-    return null;
+    return <AppLoading />;
   }
-  return (
-    <>
-      {/* <Text>qweqwe</Text> */}
-      <RegistrationScreen onLayout={onLayoutRootView} />
-      {/* <LoginScreen onLayout={onLayoutRootView} /> */}
-    </>
-  );
+
+  return <NavigationContainer>{routing}</NavigationContainer>;
 }
 
 // const styles = StyleSheet.create({
