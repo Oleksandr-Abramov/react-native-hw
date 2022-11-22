@@ -15,8 +15,6 @@ import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 
-import IconButton from "./src/components/IconButton";
-
 export const useRoute = (isAuth) => {
   if (!isAuth) {
     return (
@@ -44,14 +42,12 @@ export const useRoute = (isAuth) => {
         tabBarShowLabel: false,
         tabBarStyle: [
           {
-            backgroundColor: "#E5E5E5",
             borderTopWidth: 1,
             borderTopColor: "rgba(0, 0, 0, 0.3)",
           },
           null,
         ],
         headerStyle: {
-          backgroundColor: "#E5E5E5",
           borderBottomWidth: 1,
           borderBottomColor: "rgba(0, 0, 0, 0.3)",
         },
@@ -65,13 +61,7 @@ export const useRoute = (isAuth) => {
         name="Posts"
         component={PostsScreen}
         options={{
-          title: "Публікації",
-
-          headerRight: () => (
-            <TouchableOpacity style={{ marginRight: 16 }}>
-              <IconButton type="log-out" />
-            </TouchableOpacity>
-          ),
+          headerShown: false,
           tabBarIcon: ({ focused, size, color }) => (
             <View style={[focused ? styles.bottomButton : styles.bottomButton2]}>
               <Ionicons name="grid-outline" size={size} color={focused ? "#fff" : "rgba(33, 33, 33, 0.8)"} />

@@ -2,7 +2,16 @@ import * as React from "react";
 import { SvgXml } from "react-native-svg";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
-import { iconAdd, iconShape, iconCamera, mapIcon, iconLogOut, userIcon, iconArrowLeft } from "./iconSvg/IconSvg";
+import {
+  iconAdd,
+  iconShape,
+  iconCamera,
+  mapIcon,
+  iconLogOut,
+  userIcon,
+  iconArrowLeft,
+  iconComment,
+} from "./iconSvg/IconSvg";
 
 export default function IconButton({ type }) {
   const AddSvg = () => <SvgXml xml={iconAdd} style={styles.icon} />;
@@ -12,6 +21,7 @@ export default function IconButton({ type }) {
   const LogOutSvg = () => <SvgXml xml={iconLogOut} style={styles.icon} />;
   const ArrowLeftSvg = () => <SvgXml xml={iconArrowLeft} style={styles.icon} />;
   const ShapeSvg = () => <SvgXml xml={iconShape} style={styles.icon} />;
+  const Comment = () => <SvgXml xml={iconComment} style={styles.icon} />;
 
   let svg;
   switch (type) {
@@ -35,6 +45,9 @@ export default function IconButton({ type }) {
       break;
     case "map":
       svg = <MapSvg />;
+      break;
+    case "comment":
+      svg = <Comment />;
       break;
     default:
       svg = "";
