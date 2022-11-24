@@ -4,12 +4,20 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../nested/HomeScreen";
 import CommentsScreen from "../nested/CommentsScreen";
 import MapScreen from "../nested/MapScreen";
-
+import { authSignOutUser } from "../../redux/auth/authOperations";
 import IconButton from "../../components/IconButton";
+import { useDispatch } from "react-redux";
 
 const NestedScreen = createStackNavigator();
 
 const PostsScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+
+  const handleSighOut = () => {
+    console.log("qweqwe");
+    dispatch(authSignOutUser());
+  };
+
   return (
     <NestedScreen.Navigator>
       <NestedScreen.Screen
@@ -17,7 +25,7 @@ const PostsScreen = ({ navigation }) => {
         component={HomeScreen}
         options={{
           headerRight: () => (
-            <TouchableOpacity style={{ marginRight: 16 }}>
+            <TouchableOpacity style={{ padding: 15 }} onPress={handleSighOut}>
               <IconButton type="log-out" />
             </TouchableOpacity>
           ),

@@ -12,6 +12,9 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../../redux/auth/authOperations";
+
 const initialState = {
   email: "",
   password: "",
@@ -25,27 +28,25 @@ export default function LoginScreen({ navigation }) {
   const [borderInput, setBorderInput] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
+  const dispatch = useDispatch();
+
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
     setBorderInput(null);
   };
 
-  const handleSubmit = () => {
-    console.log("state", state);
-    setstate(initialState);
-    setShowPassword(false);
-  };
+  // const handleSubmit = () => {
+  //   console.log("state", state);
+  //   setstate(initialState);
+  //   setShowPassword(false);
+  // };
 
   const keyboardSubmit = () => {
-    console.log("state", state);
+    dispatch(authSignInUser(state));
     setstate(initialState);
     keyboardHide();
     setShowPassword(false);
-    navigation.navigate("Posts", {
-      screen: "PostsScreen",
-      params: state,
-    });
   };
 
   return (
@@ -106,7 +107,7 @@ export default function LoginScreen({ navigation }) {
             </View>
             {!isShowKeyboard && (
               <View>
-                <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={keyboardHide}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.btn} onPress={keyboardSubmit}>
                   <Text style={styles.btnTitle}>Увійти</Text>
                 </TouchableOpacity>
                 <TouchableOpacity

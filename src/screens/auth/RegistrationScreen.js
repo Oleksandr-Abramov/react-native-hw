@@ -12,6 +12,8 @@ import {
   TouchableWithoutFeedback,
   Image,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { authSignUpUser } from "../../redux/auth/authOperations";
 
 const initialState = {
   login: "",
@@ -29,6 +31,8 @@ export default function LoginScreen({ navigation }) {
   const [borderInput, setBorderInput] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
+  const dispatch = useDispatch();
+
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
@@ -36,13 +40,13 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleSubmit = () => {
-    console.log("state", state);
+    dispatch(authSignUpUser(state));
     setstate(initialState);
     setShowPassword(false);
   };
 
   const keyboardSubmit = () => {
-    console.log("state", state);
+    dispatch(authSignUpUser(state));
     setstate(initialState);
     keyboardHide();
     setShowPassword(false);

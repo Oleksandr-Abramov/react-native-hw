@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
 import { useFonts, Roboto_400Regular, Roboto_500Medium } from "@expo-google-fonts/roboto";
-import { NavigationContainer } from "@react-navigation/native";
-import { useRoute } from "./router";
+
+import { Provider } from "react-redux";
+import { store } from "./src/redux/store";
+import Main from "./src/components/Main";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -9,20 +10,13 @@ export default function App() {
     Roboto_500Medium,
   });
 
-  const routing = useRoute(true);
-
   if (!fontsLoaded) {
     return null;
   }
 
-  return <NavigationContainer>{routing}</NavigationContainer>;
+  return (
+    <Provider store={store}>
+      <Main />
+    </Provider>
+  );
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#f00f",
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-// });
