@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { View, Button, StyleSheet, FlatList, Image, Text, TouchableOpacity } from "react-native";
 import IconButton from "../../components/IconButton";
+import db from "../../firebase/config";
 
 const HomeScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
 
+  const getAllPost = async () => {
+    await db
+      .firestore()
+      .collection("posts")
+      .onSnapshot((data) => setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))));
+  };
+
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
-    }
+    getAllPost();
   }, [route.params]);
   console.log("posts", posts);
   return (

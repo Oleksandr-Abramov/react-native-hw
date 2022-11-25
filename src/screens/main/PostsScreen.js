@@ -14,7 +14,6 @@ const PostsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const handleSighOut = () => {
-    console.log("qweqwe");
     dispatch(authSignOutUser());
   };
 
