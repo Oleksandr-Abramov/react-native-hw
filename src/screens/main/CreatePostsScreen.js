@@ -23,6 +23,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [locationName, setLocationName] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [borderInput, setBorderInput] = useState(null);
+  const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions();
 
   const { userId, nickName } = useSelector((state) => state.auth);
 
@@ -34,6 +35,9 @@ const CreatePostsScreen = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
+      if (!cameraPermission.granted) {
+        await requestCameraPermission();
+      }
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.log("Permission to access location was denied");
@@ -69,8 +73,8 @@ const CreatePostsScreen = ({ navigation }) => {
       userId,
       nickName,
       locationName,
+      name,
     });
-    console.log("createPost", createPost);
   };
 
   const uploadPhotoToServer = async () => {

@@ -13,7 +13,18 @@ import {
   Image,
 } from "react-native";
 import { useDispatch } from "react-redux";
+import AvatarPicker from "../../components/AvatarPicker";
 import { authSignUpUser } from "../../redux/auth/authOperations";
+import db from "../../firebase/config";
+import uploadImage from "../../services/uploadImage";
+import getDefaultAvatar from "../../services/getDefaultAvatar";
+import avatarDefault from "../../images/avatar-default-icon.png";
+
+import * as ImagePicker from "expo-image-picker";
+const add = require("../../images/add.png");
+const remove = require("../../images/remove.png");
+
+import { nanoid } from "@reduxjs/toolkit";
 
 const initialState = {
   login: "",
@@ -22,14 +33,15 @@ const initialState = {
 };
 
 const image = require("../../images/PhotoBG.jpg");
-const add = require("../../images/add.png");
-const remove = require("../../images/remove.png");
+// const add = require("../../images/add.png");
+// const remove = require("../../images/remove.png");
 
 export default function LoginScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setstate] = useState(initialState);
   const [borderInput, setBorderInput] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [avatar, setAvatar] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -39,17 +51,57 @@ export default function LoginScreen({ navigation }) {
     setBorderInput(null);
   };
 
-  const handleSubmit = () => {
-    dispatch(authSignUpUser(state));
+  const handleSubmit = async () => {
+    const avatarImg = await uploadAvatarToServer();
+    dispatch(authSignUpUser(state, avatarImg));
     setstate(initialState);
     setShowPassword(false);
   };
 
-  const keyboardSubmit = () => {
-    dispatch(authSignUpUser(state));
+  const keyboardSubmit = async () => {
+    const avatarImg = await uploadAvatarToServer();
+    dispatch(authSignUpUser(state, avatarImg));
     setstate(initialState);
     keyboardHide();
     setShowPassword(false);
+  };
+
+  const uploadAvatarToServer = async () => {
+    try {
+      console.log("avatar", avatar);
+      if (avatar) {
+        const avatarURL = avatar;
+        // ? await uploadImage({ uri: avatar }) :
+        // getDefaultAvatar(state.email);
+        console.log("avatarURL", avatarURL);
+        const response = await fetch(avatarURL);
+        const file = await response.blob();
+        console.log("file", file);
+        const avatarId = nanoid();
+        await db.storage().ref(`avatarImage/${avatarId}`).put(file);
+        const processedAvatar = await db.storage().ref("avatarImage").child(avatarId).getDownloadURL();
+        return processedAvatar;
+      } else {
+        const processedAvatar = await db.storage().ref("avatarImage").child("avatar-default-icon.png").getDownloadURL();
+        return processedAvatar;
+      }
+    } catch (error) {
+      console.log("error.message", error.message);
+      console.log("error.code", error.code);
+    }
+  };
+
+  const addAvatar = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      allowsMultipleSelection: false,
+    });
+    console.log("result", result);
+
+    if (!result.cancelled) {
+      setAvatar(result.uri);
+    }
   };
 
   return (
@@ -66,7 +118,9 @@ export default function LoginScreen({ navigation }) {
             {/* <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}> */}
             <View style={styles.avatarWrapper}>
               <View style={styles.avatar}>
-                <Image style={styles.avatarBtn} source={add} />
+                <TouchableOpacity onPress={addAvatar}>
+                  <Image style={styles.avatarBtn} source={add} />
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.header}>
@@ -236,4 +290,13 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 78,
   },
+  avatar: {
+    position: "relative",
+    marginTop: -60,
+    width: 120,
+    height: 120,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
+  avatarBtn: { position: "absolute", bottom: 15, right: -12.5 },
 });
