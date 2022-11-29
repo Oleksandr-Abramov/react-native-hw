@@ -45,7 +45,7 @@ const HomeScreen = ({ navigation, route }) => {
                 <IconButton type="comment" />
                 <TouchableOpacity
                   style={styles.btnComents}
-                  onPress={() => navigation.navigate("Comments", { postId: item.id })}
+                  onPress={() => navigation.navigate("Comments", { postId: item.id, photo: item.photo })}
                 >
                   <Text style={styles.text}>{findId(item.id)}</Text>
                 </TouchableOpacity>

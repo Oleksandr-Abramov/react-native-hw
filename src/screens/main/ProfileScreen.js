@@ -81,9 +81,9 @@ export default function ProfileScreen({ navigation, route }) {
                 <View style={styles.avatar}>
                   <View style={styles.avatar}>
                     <Image source={{ uri: avatarURL }} style={styles.header} />
-                    <TouchableOpacity onPress={addAvatar} style={styles.headerImg}>
+                    {/* <TouchableOpacity onPress={addAvatar} style={styles.headerImg}>
                       <Image style={styles.avatarBtn} source={add} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                   </View>
                 </View>
                 <TouchableOpacity onPress={signOut} style={styles.logOutIcon}>

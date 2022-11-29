@@ -1,20 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, SafeAreaView, FlatList, TextInput, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+  LogBox,
+} from "react-native";
 import { useSelector } from "react-redux";
 import db from "../../firebase/config";
 
 const CommentsScreen = ({ route }) => {
-  const { postId } = route.params;
+  const { postId, photo } = route.params;
+  console.log("photo", photo);
   console.log("postId", postId);
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
-  console.log("allComments", allComments);
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
   const { avatarURL } = useSelector((state) => state.auth);
   const { userId } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
     getAllComments();
   }, []);
+
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
 
   const date = new Date().toLocaleString();
 
@@ -23,6 +44,7 @@ const CommentsScreen = ({ route }) => {
   //   setComment("");
   // };
   const createComment = async () => {
+    keyboardHide();
     db.firestore().collection("comments").add({ comment, avatarURL, date, postId, userId });
     setComment("");
   };
@@ -40,15 +62,19 @@ const CommentsScreen = ({ route }) => {
       .where("postId", "==", postId)
       .onSnapshot((data) =>
         setAllComments(
-          data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-          // .sort((a, b) => (a.date > b.date ? 1 : -1))
+          data.docs.map((doc) => ({ ...doc.data(), id: doc.id })).sort((a, b) => (a.date > b.date ? 1 : -1))
         )
       );
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.container}>
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <View style={styles.container}>
+        {/* <SafeAreaView style={styles.container}> */}
+        {/* <ScrollView> */}
+        <View style={styles.postContainer}>
+          <Image source={{ uri: photo }} style={styles.postImage} />
+        </View>
         <FlatList
           data={allComments}
           renderItem={({ item }) => (
@@ -60,22 +86,24 @@ const CommentsScreen = ({ route }) => {
           )}
           keyExtractor={(item) => item.id}
         />
-      </SafeAreaView>
-      <TextInput
-        style={{
-          ...styles.input,
-        }}
-        value={comment}
-        placeholder="Коментувати"
-        // onFocus={() => {
-        //   setInputIsFocus(styles.isFocused);
-        // }}
-        onChangeText={setComment}
-      />
-      <TouchableOpacity style={styles.btn} activeOpacity={0.7} onPress={createComment}>
-        <Text style={styles.btnTitle}>Опубликовать</Text>
-      </TouchableOpacity>
-    </View>
+        {/* </ScrollView> */}
+        {/* </SafeAreaView> */}
+        <View onSubmitEditing={createComment}>
+          <TextInput
+            value={comment}
+            onFocus={() => {
+              setIsShowKeyboard(true);
+            }}
+            style={{ ...styles.input, borderColor: isShowKeyboard ? "#FF6C00" : "#E8E8E8" }}
+            placeholder="Коментувати"
+            onChangeText={setComment}
+          />
+          <TouchableOpacity style={styles.btn} activeOpacity={0.7} onPress={createComment}>
+            <Text style={styles.btnTitle}>Опубликовать</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -109,7 +137,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "#fff",
-    borderBottomWidth: 1,
+    borderWidth: 1,
     borderColor: "#E8E8E8",
     borderStyle: "solid",
     borderRadius: 8,
@@ -121,6 +149,15 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 50,
+    borderRadius: 8,
+  },
+  postContainer: {
+    marginBottom: 10,
+    marginHorizontal: 16,
+  },
+  postImage: {
+    width: "100%",
+    height: 240,
     borderRadius: 8,
   },
 });
