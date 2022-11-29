@@ -13,12 +13,8 @@ import {
   Image,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import AvatarPicker from "../../components/AvatarPicker";
 import { authSignUpUser } from "../../redux/auth/authOperations";
 import db from "../../firebase/config";
-import uploadImage from "../../services/uploadImage";
-import getDefaultAvatar from "../../services/getDefaultAvatar";
-import avatarDefault from "../../images/avatar-default-icon.png";
 
 import * as ImagePicker from "expo-image-picker";
 const add = require("../../images/add.png");
@@ -33,8 +29,6 @@ const initialState = {
 };
 
 const image = require("../../images/PhotoBG.jpg");
-// const add = require("../../images/add.png");
-// const remove = require("../../images/remove.png");
 
 export default function LoginScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
@@ -42,6 +36,7 @@ export default function LoginScreen({ navigation }) {
   const [borderInput, setBorderInput] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  console.log("avatar", avatar);
 
   const dispatch = useDispatch();
 
@@ -71,9 +66,6 @@ export default function LoginScreen({ navigation }) {
       console.log("avatar", avatar);
       if (avatar) {
         const avatarURL = avatar;
-        // ? await uploadImage({ uri: avatar }) :
-        // getDefaultAvatar(state.email);
-        console.log("avatarURL", avatarURL);
         const response = await fetch(avatarURL);
         const file = await response.blob();
         console.log("file", file);
@@ -99,8 +91,8 @@ export default function LoginScreen({ navigation }) {
     });
     console.log("result", result);
 
-    if (!result.cancelled) {
-      setAvatar(result.uri);
+    if (!result.canceled) {
+      setAvatar(result.assets[0].uri);
     }
   };
 
@@ -118,9 +110,21 @@ export default function LoginScreen({ navigation }) {
             {/* <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}> */}
             <View style={styles.avatarWrapper}>
               <View style={styles.avatar}>
-                <TouchableOpacity onPress={addAvatar}>
-                  <Image style={styles.avatarBtn} source={add} />
-                </TouchableOpacity>
+                {avatar && <Image source={{ uri: avatar }} style={styles.avatarImg} />}
+                {!avatar ? (
+                  <TouchableOpacity onPress={addAvatar} style={styles.avatarBtn}>
+                    <Image source={add} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setAvatar(null);
+                    }}
+                    style={styles.avatarBtn}
+                  >
+                    <Image source={remove} />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
             <View style={styles.header}>
@@ -220,7 +224,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },
-  avatarBtn: { position: "absolute", bottom: 15, right: -12.5 },
+  avatarImg: {
+    position: "absolute",
+    top: 0,
+    // backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+    width: 120,
+    height: 120,
+  },
+  avatarBtn: {
+    position: "absolute",
+    bottom: 15,
+    right: -12.5,
+  },
   input: {
     borderWidth: 1,
     borderColor: "#E8E8E8",

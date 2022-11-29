@@ -31,9 +31,9 @@ export default function ProfileScreen({ navigation, route }) {
   const { avatarURL } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
     getUserPosts();
     getAllComments();
-    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
 
   const getUserPosts = async () => {
