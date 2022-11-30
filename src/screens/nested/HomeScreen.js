@@ -70,9 +70,10 @@ const HomeScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   postContainer: {
-    marginBottom: 10,
+    marginBottom: 32,
     marginHorizontal: 16,
     // justifyContent: "center",
     // alignItems: "center",

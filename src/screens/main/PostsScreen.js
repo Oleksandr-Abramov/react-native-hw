@@ -50,7 +50,7 @@ const PostsScreen = ({ navigation }) => {
           ),
           title: "Коментарі",
           headerStyle: {
-            backgroundColor: "#E5E5E5",
+            backgroundColor: "#fff",
             borderBottomWidth: 1,
             borderBottomColor: "rgba(0, 0, 0, 0.3)",
           },
@@ -75,7 +75,7 @@ const PostsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
   },

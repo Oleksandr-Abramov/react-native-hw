@@ -9,11 +9,12 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import { Camera } from "expo-camera";
+import { Camera, CameraType } from "expo-camera";
 import * as Location from "expo-location";
 import IconButton from "../../components/IconButton";
 import db from "../../firebase/config";
 import { useSelector } from "react-redux";
+import { useIsFocused } from "@react-navigation/native";
 
 const CreatePostsScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
@@ -23,7 +24,10 @@ const CreatePostsScreen = ({ navigation }) => {
   const [locationName, setLocationName] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [borderInput, setBorderInput] = useState(null);
-  const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions();
+  // const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions();
+  const [type, setType] = useState(CameraType.back);
+  // const [permission, requestPermission] = Camera.useCameraPermissions();
+  const isFocused = useIsFocused();
 
   const { userId, nickName } = useSelector((state) => state.auth);
 
@@ -35,10 +39,10 @@ const CreatePostsScreen = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
-      await cameraPermission.granted;
-      if (!cameraPermission.granted) {
-        await requestCameraPermission();
-      }
+      // await cameraPermission.granted;
+      // if (!cameraPermission.granted) {
+      //   await requestCameraPermission();
+      // }
 
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -57,6 +61,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
     setPhoto(photo.uri);
+    // setType((current) => (current === CameraType.back ? CameraType.front : CameraType.back));
   };
 
   const sendPhoto = () => {
@@ -108,16 +113,18 @@ const CreatePostsScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.createPostsContainer}>
-          <Camera style={styles.camera} ref={setCamera}>
-            <TouchableOpacity onPress={takePhoto} style={styles.snapContainer}>
-              <IconButton type="camera" />
-            </TouchableOpacity>
-            {photo && (
-              <TouchableOpacity style={styles.takePhotoContainer} onPress={() => setPhoto(null)}>
-                <Image source={{ uri: photo }} style={styles.imageContainer} />
+          {isFocused && (
+            <Camera style={styles.camera} ref={setCamera}>
+              <TouchableOpacity onPress={takePhoto} style={styles.snapContainer}>
+                <IconButton type="camera" />
               </TouchableOpacity>
-            )}
-          </Camera>
+              {photo && (
+                <TouchableOpacity style={styles.takePhotoContainer} onPress={() => setPhoto(null)}>
+                  <Image source={{ uri: photo }} style={styles.imageContainer} />
+                </TouchableOpacity>
+              )}
+            </Camera>
+          )}
           <View onSubmitEditing={keyboardHide}>
             <Text style={styles.cameraText}>{!photo ? "Завантажте фото" : "Редагувати фото"}</Text>
 

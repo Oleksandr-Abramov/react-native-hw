@@ -27,8 +27,7 @@ export default function ProfileScreen({ navigation, route }) {
   const [userPosts, setUserPosts] = useState([]);
   const [allComments, setAllComments] = useState([]);
   console.log("userPosts", userPosts);
-  const { userId } = useSelector((state) => state.auth);
-  const { avatarURL } = useSelector((state) => state.auth);
+  const { userId, avatarURL, nickName } = useSelector((state) => state.auth);
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
@@ -91,7 +90,7 @@ export default function ProfileScreen({ navigation, route }) {
                 </TouchableOpacity>
               </View>
               <View style={styles.innerBoxTextWrap}>
-                <Text style={styles.innerBoxText}>{userPosts[0]?.nickName}</Text>
+                <Text style={styles.innerBoxText}>{nickName}</Text>
               </View>
             </View>
             <View style={styles.innerBox}>

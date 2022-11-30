@@ -70,25 +70,29 @@ const CommentsScreen = ({ route }) => {
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
-        {/* <SafeAreaView style={styles.container}> */}
-        {/* <ScrollView> */}
-        <View style={styles.postContainer}>
-          <Image source={{ uri: photo }} style={styles.postImage} />
-        </View>
-        <FlatList
-          data={allComments}
-          renderItem={({ item }) => (
-            <View style={styles.comment}>
-              <Image source={{ uri: item.avatarURL }} style={styles.image} />
-              <Text>{item.comment}</Text>
-              <Text>{item.date}</Text>
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-        />
-        {/* </ScrollView> */}
+        {/* <SafeAreaView > */}
+        <ScrollView>
+          <View style={styles.postContainer}>
+            <Image source={{ uri: photo }} style={styles.postImage} />
+          </View>
+          <FlatList
+            data={allComments}
+            renderItem={({ item }) => (
+              <View style={{ ...styles.comment, flexDirection: item.userId === userId ? "row-reverse" : "row" }}>
+                <Image source={{ uri: item.avatarURL }} style={styles.image} />
+                <View style={item.userId === userId ? styles.textContainerUser : styles.textContainerNoUser}>
+                  <Text style={styles.text}>{item.comment}</Text>
+                  <Text style={{ ...styles.date, textAlign: item.userId === userId ? "left" : "right" }}>
+                    {item.date}
+                  </Text>
+                </View>
+              </View>
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        </ScrollView>
         {/* </SafeAreaView> */}
-        <View onSubmitEditing={createComment}>
+        <View onSubmitEditing={createComment} style={styles.inputContainer}>
           <TextInput
             value={comment}
             onFocus={() => {
@@ -99,7 +103,9 @@ const CommentsScreen = ({ route }) => {
             onChangeText={setComment}
           />
           <TouchableOpacity style={styles.btn} activeOpacity={0.7} onPress={createComment}>
-            <Text style={styles.btnTitle}>Опубликовать</Text>
+            <View style={styles.inputContainer}>
+              <Text style={styles.btnTitle}>&#8593;</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -110,50 +116,87 @@ const CommentsScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
+    backgroundColor: "#fff",
     justifyContent: "center",
-    marginHorizontal: 10,
+    paddingHorizontal: 10,
   },
   comment: {
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 30,
-    marginTop: 10,
+    marginTop: 24,
+  },
+  textContainerUser: {
+    padding: 16,
+    marginRight: 16,
+    width: "88%",
+    backgroundColor: "rgba(0, 0, 0, 0.03)",
+    borderRadius: 6,
+    borderTopRightRadius: 0,
+  },
+  textContainerNoUser: {
+    padding: 16,
+    marginLeft: 16,
+    width: "88%",
+    backgroundColor: "rgba(0, 0, 0, 0.03)",
+    borderRadius: 6,
+    borderTopLeftRadius: 0,
+  },
+  text: {
+    fontFamily: "Roboto_400Regular",
+    fontSize: 13,
+    lineHeight: 18,
+    color: "#212121",
+    marginBottom: 8,
+  },
+  date: {
+    fontFamily: "Roboto_400Regular",
+    fontSize: 10,
+    lineHeight: 12,
+    color: "#bdbdbd",
   },
   btn: {
-    marginTop: 40,
-    width: "100%",
-    padding: 16,
+    position: "absolute",
+    right: 8,
+    bottom: 8,
+    width: 34,
+    height: 34,
     backgroundColor: "#FF6C00",
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
   },
-  btnTitle: {
-    fontFamily: "Roboto_400Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#fff",
+
+  inputContainer: {
+    position: "relative",
   },
   input: {
-    backgroundColor: "#fff",
+    backgroundColor: "#F6F6F6",
     borderWidth: 1,
     borderColor: "#E8E8E8",
     borderStyle: "solid",
-    borderRadius: 8,
-    marginTop: 16,
+    borderRadius: 100,
+    // marginTop: 16,
     paddingLeft: 16,
-    height: 40,
+    paddingRight: 56,
+    height: 50,
     width: "100%",
   },
+  btnTitle: {
+    position: "absolute",
+    top: -28,
+    right: -9,
+    fontSize: 36,
+    // fontWeight: "bold",
+    color: "#fff",
+
+    // justifyContent: "center",
+  },
   image: {
-    width: 50,
-    height: 50,
-    borderRadius: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 100,
   },
   postContainer: {
     marginBottom: 10,
-    marginHorizontal: 16,
+    // marginHorizontal: 16,
   },
   postImage: {
     width: "100%",
