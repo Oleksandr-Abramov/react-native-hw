@@ -113,18 +113,18 @@ const CreatePostsScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.createPostsContainer}>
-          {isFocused && (
-            <Camera style={styles.camera} ref={setCamera}>
-              <TouchableOpacity onPress={takePhoto} style={styles.snapContainer}>
-                <IconButton type="camera" />
+          {/* {isFocused && ( */}
+          <Camera style={styles.camera} ref={setCamera}>
+            <TouchableOpacity onPress={takePhoto} style={styles.snapContainer}>
+              <IconButton type="camera" />
+            </TouchableOpacity>
+            {photo && (
+              <TouchableOpacity style={styles.takePhotoContainer} onPress={() => setPhoto(null)}>
+                <Image source={{ uri: photo }} style={styles.imageContainer} />
               </TouchableOpacity>
-              {photo && (
-                <TouchableOpacity style={styles.takePhotoContainer} onPress={() => setPhoto(null)}>
-                  <Image source={{ uri: photo }} style={styles.imageContainer} />
-                </TouchableOpacity>
-              )}
-            </Camera>
-          )}
+            )}
+          </Camera>
+          ){/* } */}
           <View onSubmitEditing={keyboardHide}>
             <Text style={styles.cameraText}>{!photo ? "Завантажте фото" : "Редагувати фото"}</Text>
 

@@ -36,16 +36,14 @@ export default function ProfileScreen({ navigation, route }) {
   }, []);
 
   const getUserPosts = async () => {
-    await db
-      .firestore()
+    db.firestore()
       .collection("posts")
       .where("userId", "==", userId)
       .onSnapshot((data) => setUserPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))));
   };
 
   const getAllComments = async () => {
-    await db
-      .firestore()
+    db.firestore()
       .collection("comments")
       .onSnapshot((data) => setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))));
   };
@@ -73,75 +71,63 @@ export default function ProfileScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
       <ImageBackground style={styles.bgImage} source={require("../../images/PhotoBG.jpg")}>
-        <SafeAreaView>
-          <ScrollView>
-            <View style={styles.headerContainer}>
-              <View style={styles.avatarWrapper}>
+        {/* <SafeAreaView> */}
+        <ScrollView>
+          <View style={styles.headerContainer}>
+            <View style={styles.avatarWrapper}>
+              <View style={styles.avatar}>
                 <View style={styles.avatar}>
-                  <View style={styles.avatar}>
-                    <Image source={{ uri: avatarURL }} style={styles.header} />
-                    {/* <TouchableOpacity onPress={addAvatar} style={styles.headerImg}>
+                  <Image source={{ uri: avatarURL }} style={styles.header} />
+                  {/* <TouchableOpacity onPress={addAvatar} style={styles.headerImg}>
                       <Image style={styles.avatarBtn} source={add} />
                     </TouchableOpacity> */}
-                  </View>
                 </View>
-                <TouchableOpacity onPress={signOut} style={styles.logOutIcon}>
-                  <IconButton type="log-out" onPress={signOut} />
-                </TouchableOpacity>
               </View>
-              <View style={styles.innerBoxTextWrap}>
-                <Text style={styles.innerBoxText}>{nickName}</Text>
-              </View>
+              <TouchableOpacity onPress={signOut} style={styles.logOutIcon}>
+                <IconButton type="log-out" onPress={signOut} />
+              </TouchableOpacity>
             </View>
-            <View style={styles.innerBox}>
-              {/* <View>
+            <View style={styles.innerBoxTextWrap}>
+              <Text style={styles.innerBoxText}>{nickName}</Text>
+            </View>
+          </View>
+          <View style={styles.innerBox}>
+            {/* <View style={styles.innerBoxTextWrap}> */}
             <FlatList
               data={userPosts}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(item, indx) => indx.toString()}
               renderItem={({ item }) => (
                 <View style={styles.postContainer}>
                   <Image source={{ uri: item.photo }} style={styles.image} />
-                  {console.log("item.photo", item.photo)}
+                  <Text style={styles.title}>{item.name}</Text>
+                  <View style={styles.btnContainer}>
+                    <View style={{ flexDirection: "row" }}>
+                      <IconButton type="comment" />
+                      <TouchableOpacity
+                        style={styles.btnComents}
+                        onPress={() => navigation.navigate("Comments", { postId: item.id, photo: item.photo })}
+                      >
+                        {console.log("item.id", item.id)}
+                        <Text style={styles.text}>{findId(item.id)}</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                      <IconButton type="map" />
+                      <TouchableOpacity
+                        style={styles.btnLocation}
+                        onPress={() => navigation.navigate("Map", { location: item.location })}
+                      >
+                        <Text style={{ ...styles.text, textDecorationLine: "underline" }}>{item.locationName}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
               )}
             />
-          </View> */}
-              {/* <View style={styles.innerBoxTextWrap}> */}
-              <FlatList
-                data={userPosts}
-                keyExtractor={(item, indx) => indx.toString()}
-                renderItem={({ item }) => (
-                  <View style={styles.postContainer}>
-                    <Image source={{ uri: item.photo }} style={styles.image} />
-                    <Text style={styles.title}>{item.name}</Text>
-                    <View style={styles.btnContainer}>
-                      <View style={{ flexDirection: "row" }}>
-                        <IconButton type="comment" />
-                        <TouchableOpacity
-                          style={styles.btnComents}
-                          onPress={() => navigation.navigate("Comments", { postId: item.id })}
-                        >
-                          {console.log("item.id", item.id)}
-                          <Text style={styles.text}>{findId(item.id)}</Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View style={{ flexDirection: "row" }}>
-                        <IconButton type="map" />
-                        <TouchableOpacity
-                          style={styles.btnLocation}
-                          onPress={() => navigation.navigate("Map", { location: item.location })}
-                        >
-                          <Text style={{ ...styles.text, textDecorationLine: "underline" }}>{item.locationName}</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View>
-                )}
-              />
-            </View>
-            {/* </View> */}
-          </ScrollView>
-        </SafeAreaView>
+          </View>
+          {/* </View> */}
+        </ScrollView>
+        {/* </SafeAreaView> */}
       </ImageBackground>
     </View>
   );

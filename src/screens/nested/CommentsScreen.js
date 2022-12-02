@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -18,14 +18,15 @@ import db from "../../firebase/config";
 
 const CommentsScreen = ({ route }) => {
   const { postId, photo } = route.params;
-  console.log("photo", photo);
-  console.log("postId", postId);
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-
+  console.log("isShowKeyboard", isShowKeyboard);
+  const [borderInput, setBorderInput] = useState(null);
   const { avatarURL } = useSelector((state) => state.auth);
   const { userId } = useSelector((state) => state.auth);
+
+  const scrollViewRef = useRef();
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
@@ -33,29 +34,19 @@ const CommentsScreen = ({ route }) => {
   }, []);
 
   const keyboardHide = () => {
-    setIsShowKeyboard(false);
     Keyboard.dismiss();
+    setIsShowKeyboard(false);
+    setBorderInput(null);
   };
 
-  const date = new Date().toLocaleString();
+  const date = new Date().getTime();
 
-  // const createComment = async () => {
-  //   db.firestore().collection("posts").doc(postId).collection("comments").add({ comment, avatarURL, date });
-  //   setComment("");
-  // };
   const createComment = async () => {
     keyboardHide();
     db.firestore().collection("comments").add({ comment, avatarURL, date, postId, userId });
     setComment("");
   };
 
-  // const getAllComments = async () => {
-  //   db.firestore()
-  //     .collection("posts")
-  //     .doc(postId)
-  //     .collection("comments")
-  //     .onSnapshot((data) => setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))));
-  // };
   const getAllComments = async () => {
     db.firestore()
       .collection("comments")
@@ -70,28 +61,35 @@ const CommentsScreen = ({ route }) => {
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
-        {/* <SafeAreaView > */}
-        <ScrollView>
-          <View style={styles.postContainer}>
-            <Image source={{ uri: photo }} style={styles.postImage} />
-          </View>
-          <FlatList
-            data={allComments}
-            renderItem={({ item }) => (
-              <View style={{ ...styles.comment, flexDirection: item.userId === userId ? "row-reverse" : "row" }}>
-                <Image source={{ uri: item.avatarURL }} style={styles.image} />
-                <View style={item.userId === userId ? styles.textContainerUser : styles.textContainerNoUser}>
-                  <Text style={styles.text}>{item.comment}</Text>
-                  <Text style={{ ...styles.date, textAlign: item.userId === userId ? "left" : "right" }}>
-                    {item.date}
-                  </Text>
+        {/* <SafeAreaView> */}
+        <View style={styles.postContainer}>
+          <Image source={{ uri: photo }} style={styles.postImage} />
+        </View>
+        <TouchableOpacity activeOpacity={1}>
+          {/* </SafeAreaView> */}
+          {/* <ScrollView
+          ref={scrollViewRef}
+          onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+          > */}
+          <View style={{ height: isShowKeyboard ? 60 : 320 }}>
+            <FlatList
+              data={allComments}
+              renderItem={({ item }) => (
+                <View style={{ ...styles.comment, flexDirection: item.userId === userId ? "row-reverse" : "row" }}>
+                  <Image source={{ uri: item.avatarURL }} style={styles.image} />
+                  <View style={item.userId === userId ? styles.textContainerUser : styles.textContainerNoUser}>
+                    <Text style={styles.text}>{item.comment}</Text>
+                    <Text style={{ ...styles.date, textAlign: item.userId === userId ? "left" : "right" }}>
+                      {new Date(Number(item.date)).toLocaleString()}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            )}
-            keyExtractor={(item) => item.id}
-          />
-        </ScrollView>
-        {/* </SafeAreaView> */}
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          </View>
+          {/* </ScrollView> */}
+        </TouchableOpacity>
         <View onSubmitEditing={createComment} style={styles.inputContainer}>
           <TextInput
             value={comment}
@@ -116,10 +114,16 @@ const CommentsScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "space-between",
+    // marginBottom: 300,
+
     backgroundColor: "#fff",
-    justifyContent: "center",
+    // justifyContent: "center",
     paddingHorizontal: 10,
   },
+  // commentContainer: {
+  //   maxHeight: 320,
+  // },
   comment: {
     marginTop: 24,
   },
@@ -134,7 +138,7 @@ const styles = StyleSheet.create({
   textContainerNoUser: {
     padding: 16,
     marginLeft: 16,
-    width: "88%",
+    width: "87%",
     backgroundColor: "rgba(0, 0, 0, 0.03)",
     borderRadius: 6,
     borderTopLeftRadius: 0,
@@ -166,6 +170,7 @@ const styles = StyleSheet.create({
 
   inputContainer: {
     position: "relative",
+    // marginBottom: 1900,
   },
   input: {
     backgroundColor: "#F6F6F6",
@@ -195,6 +200,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   postContainer: {
+    // marginTop: 600,
     marginBottom: 10,
     // marginHorizontal: 16,
   },

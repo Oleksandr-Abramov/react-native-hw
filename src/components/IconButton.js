@@ -1,6 +1,6 @@
 import * as React from "react";
 import { SvgXml } from "react-native-svg";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import {
   iconAdd,
@@ -52,11 +52,7 @@ export default function IconButton({ type }) {
     default:
       svg = "";
   }
-  return (
-    <TouchableOpacity activeOpacity={0.8} style={styles.btn}>
-      {svg}
-    </TouchableOpacity>
-  );
+  return <View style={styles.btn}>{svg}</View>;
 }
 
 const styles = StyleSheet.create({

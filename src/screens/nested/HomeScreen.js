@@ -5,20 +5,16 @@ import db from "../../firebase/config";
 
 const HomeScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
-  console.log("posts", posts);
   const [allComments, setAllComments] = useState([]);
-  console.log("allComments", allComments);
 
   const getAllPost = async () => {
-    await db
-      .firestore()
+    db.firestore()
       .collection("posts")
       .onSnapshot((data) => setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))));
   };
 
   const getAllComments = async () => {
-    await db
-      .firestore()
+    db.firestore()
       .collection("comments")
       .onSnapshot((data) => setAllComments(data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))));
   };
@@ -41,24 +37,24 @@ const HomeScreen = ({ navigation, route }) => {
             <Image source={{ uri: item.photo }} style={styles.image} />
             <Text style={styles.title}>{item.name}</Text>
             <View style={styles.btnContainer}>
-              <View style={{ flexDirection: "row" }}>
-                <IconButton type="comment" />
-                <TouchableOpacity
-                  style={styles.btnComents}
-                  onPress={() => navigation.navigate("Comments", { postId: item.id, photo: item.photo })}
-                >
+              <TouchableOpacity
+                style={styles.btnComents}
+                onPress={() => navigation.navigate("Comments", { postId: item.id, photo: item.photo })}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  <IconButton type="comment" />
                   <Text style={styles.text}>{findId(item.id)}</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <IconButton type="map" />
-                <TouchableOpacity
-                  style={styles.btnLocation}
-                  onPress={() => navigation.navigate("Map", { location: item.location })}
-                >
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.btnLocation}
+                onPress={() => navigation.navigate("Map", { location: item.location })}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  <IconButton type="map" />
                   <Text style={{ ...styles.text, textDecorationLine: "underline" }}>{item.locationName}</Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         )}
