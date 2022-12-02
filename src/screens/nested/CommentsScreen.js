@@ -67,28 +67,28 @@ const CommentsScreen = ({ route }) => {
         </View>
         <TouchableOpacity activeOpacity={1}>
           {/* </SafeAreaView> */}
-          {/* <ScrollView
-          ref={scrollViewRef}
-          onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-          > */}
-          <View style={{ height: isShowKeyboard ? 60 : 320 }}>
-            <FlatList
-              data={allComments}
-              renderItem={({ item }) => (
-                <View style={{ ...styles.comment, flexDirection: item.userId === userId ? "row-reverse" : "row" }}>
-                  <Image source={{ uri: item.avatarURL }} style={styles.image} />
-                  <View style={item.userId === userId ? styles.textContainerUser : styles.textContainerNoUser}>
-                    <Text style={styles.text}>{item.comment}</Text>
-                    <Text style={{ ...styles.date, textAlign: item.userId === userId ? "left" : "right" }}>
-                      {new Date(Number(item.date)).toLocaleString()}
-                    </Text>
+          <ScrollView
+            ref={scrollViewRef}
+            onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+          >
+            <View style={{ height: isShowKeyboard ? 60 : 320 }}>
+              <FlatList
+                data={allComments}
+                renderItem={({ item }) => (
+                  <View style={{ ...styles.comment, flexDirection: item.userId === userId ? "row-reverse" : "row" }}>
+                    <Image source={{ uri: item.avatarURL }} style={styles.image} />
+                    <View style={item.userId === userId ? styles.textContainerUser : styles.textContainerNoUser}>
+                      <Text style={styles.text}>{item.comment}</Text>
+                      <Text style={{ ...styles.date, textAlign: item.userId === userId ? "left" : "right" }}>
+                        {new Date(Number(item.date)).toLocaleString()}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              )}
-              keyExtractor={(item) => item.id}
-            />
-          </View>
-          {/* </ScrollView> */}
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
+          </ScrollView>
         </TouchableOpacity>
         <View onSubmitEditing={createComment} style={styles.inputContainer}>
           <TextInput
