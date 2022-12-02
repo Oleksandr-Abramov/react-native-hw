@@ -24,7 +24,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [locationName, setLocationName] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [borderInput, setBorderInput] = useState(null);
-  // const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions();
+  const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions();
   const [type, setType] = useState(CameraType.back);
   // const [permission, requestPermission] = Camera.useCameraPermissions();
   const isFocused = useIsFocused();
@@ -39,10 +39,10 @@ const CreatePostsScreen = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
-      // await cameraPermission.granted;
-      // if (!cameraPermission.granted) {
-      //   await requestCameraPermission();
-      // }
+      await cameraPermission.granted;
+      if (!cameraPermission.granted) {
+        await requestCameraPermission();
+      }
 
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -113,18 +113,18 @@ const CreatePostsScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.createPostsContainer}>
-          {/* {isFocused && ( */}
-          <Camera style={styles.camera} ref={setCamera}>
-            <TouchableOpacity onPress={takePhoto} style={styles.snapContainer}>
-              <IconButton type="camera" />
-            </TouchableOpacity>
-            {photo && (
-              <TouchableOpacity style={styles.takePhotoContainer} onPress={() => setPhoto(null)}>
-                <Image source={{ uri: photo }} style={styles.imageContainer} />
+          {isFocused && (
+            <Camera style={styles.camera} ref={setCamera}>
+              <TouchableOpacity onPress={takePhoto} style={styles.snapContainer}>
+                <IconButton type="camera" />
               </TouchableOpacity>
-            )}
-          </Camera>
-          ){/* } */}
+              {photo && (
+                <TouchableOpacity style={styles.takePhotoContainer} onPress={() => setPhoto(null)}>
+                  <Image source={{ uri: photo }} style={styles.imageContainer} />
+                </TouchableOpacity>
+              )}
+            </Camera>
+          )}
           <View onSubmitEditing={keyboardHide}>
             <Text style={styles.cameraText}>{!photo ? "Завантажте фото" : "Редагувати фото"}</Text>
 
